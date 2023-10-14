@@ -1,5 +1,5 @@
-import Bar from '/Users/aylilove/Desktop/3-nd course hw/skypro-music/src/components /Bar.jsx'
-import Main from '/Users/aylilove/Desktop/3-nd course hw/skypro-music/src/components /Main.jsx'
+import Bar from './components /Bar.jsx'
+import Main from './components /Main.jsx'
 import './styles/App.css';
 
 function App() {
