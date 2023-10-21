@@ -1,4 +1,9 @@
-function Bar() {
+import { useContext } from 'react'
+import loadingContext from './Context'
+
+const Bar = () => {
+  const loading = useContext(loadingContext)
+
   return (
     <div className="bar">
       <div className="bar__content">
@@ -37,18 +42,28 @@ function Bar() {
               <div className="track-play__contain">
                 <div className="track-play__image">
                   <svg className="track-play__svg" alt="music">
-                    <use xlinkHref="img/icon/sprite.svg#icon-note" />
+                    {loading ? null : (
+                      <use xlinkHref="img/icon/sprite.svg#icon-note" />
+                    )}
                   </svg>
                 </div>
                 <div className="track-play__author">
-                  <a className="track-play__author-link" href="http://">
-                    Ты та...
-                  </a>
+                  {loading ? (
+                    <div className="rectangle5915"></div>
+                  ) : (
+                    <a className="track-play__author-link" href="http://">
+                      Ты та...
+                    </a>
+                  )}
                 </div>
                 <div className="track-play__album">
-                  <a className="track-play__album-link" href="http://">
-                    Баста
-                  </a>
+                  {loading ? (
+                    <div className="rectangle5915"></div>
+                  ) : (
+                    <a className="track-play__album-link" href="http://">
+                      Баста
+                    </a>
+                  )}
                 </div>
               </div>
 
@@ -88,4 +103,4 @@ function Bar() {
   )
 }
 
-export default Bar;
+export default Bar

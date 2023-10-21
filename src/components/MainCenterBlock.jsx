@@ -2,7 +2,7 @@ import CenterBlockContent from './CenterBlockContent'
 import CenterBlockFilter from './CenterBlockFilter'
 import CenterBlockSearch from './CenterBlockSearch'
 
-function MainCenterBlock() {
+const MainCenterBlock = () => {
   return (
     <div className="main__centerblock centerblock">
       <CenterBlockSearch />

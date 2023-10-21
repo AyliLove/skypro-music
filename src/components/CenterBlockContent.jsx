@@ -1,17 +1,26 @@
-function CenterBlockContent() {
-    return (
-      <div className="centerblock__content">
-        <div className="content__title playlist-title">
-          <div className="playlist-title__col col01">Трек</div>
-          <div className="playlist-title__col col02">ИСПОЛНИТЕЛЬ</div>
-          <div className="playlist-title__col col03">АЛЬБОМ</div>
-          <div className="playlist-title__col col04">
-            <svg className="playlist-title__svg" alt="time">
-              <use xlinkHref="img/icon/sprite.svg#icon-watch" />
-            </svg>
-          </div>
+import { useContext } from 'react'
+import loadingContext from './Context'
+import PlayListItemSkeleton from './PlayListItemSkeleton'
+
+const CenterBlockContent = () => {
+  const loading = useContext(loadingContext)
+
+  return (
+    <div className="centerblock__content">
+      <div className="content__title playlist-title">
+        <div className="playlist-title__col col01">Трек</div>
+        <div className="playlist-title__col col02">ИСПОЛНИТЕЛЬ</div>
+        <div className="playlist-title__col col03">АЛЬБОМ</div>
+        <div className="playlist-title__col col04">
+          <svg className="playlist-title__svg" alt="time">
+            <use xlinkHref="img/icon/sprite.svg#icon-watch" />
+          </svg>
         </div>
-        <div className="content__playlist playlist">
+      </div>
+      <div className="content__playlist playlist">
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -44,7 +53,11 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -77,7 +90,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -110,7 +126,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -144,7 +163,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -178,7 +200,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -212,7 +237,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -224,7 +252,9 @@ function CenterBlockContent() {
                 <div className="track__title-text">
                   <a className="track__title-link" href="http://">
                     Mucho Bien
-                    <span className="track__title-span">(Hi Profile Remix)</span>
+                    <span className="track__title-span">
+                      (Hi Profile Remix)
+                    </span>
                   </a>
                 </div>
               </div>
@@ -246,7 +276,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -280,7 +313,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -314,6 +350,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -347,6 +387,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -380,6 +424,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -413,6 +461,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -446,6 +498,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -479,7 +535,14 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        
+
+       
+        
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -513,7 +576,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -546,7 +612,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-  
+        )}
+        {loading ? (
+          <PlayListItemSkeleton />
+        ) : (
           <div className="playlist__item">
             <div className="playlist__track track">
               <div className="track__title">
@@ -579,9 +648,10 @@ function CenterBlockContent() {
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
-    )
-  }
-  
-  export default CenterBlockContent
+    </div>
+  )
+}
+
+export default CenterBlockContent

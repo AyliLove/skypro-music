@@ -70,7 +70,8 @@ body {
   background-color: #181818;
 }
 
-._btn-text:hover {
+._btn-text:hover,
+.nav__burger {
   border-color: #d9b6ff;
   color: #d9b6ff;
   cursor: pointer;
@@ -307,6 +308,14 @@ body {
   margin-right: 15px;
 }
 
+.filter__button-wrapper {
+  position: relative;
+}
+
+.filter__button-wrapper:not(:last-child) {
+  margin-right: 10px;
+}
+
 .filter__button {
   font-style: normal;
   font-weight: 400;
@@ -315,11 +324,64 @@ body {
   border: 1px solid #ffffff;
   border-radius: 60px;
   padding: 6px 20px;
+  background: transparent;
+  color: #fff;
 }
 
-.filter__button:not(:last-child) {
-  margin-right: 10px;
+._btn-text_active {
+  border-color: #d9b6ff;
+  color: #d9b6ff;
 }
+
+.filter__box {
+  padding: 34px;
+  border-radius: 12px;
+  background: #313131;
+  width: 248px;
+  height: 305px;
+  position: absolute;
+  top: 50px;
+  left: 0px;
+}
+
+.filter__list {
+  /* position: relative; */
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+  overflow: scroll;
+  overflow-y: scroll;
+  width: 180px;
+  height: 232px;
+}
+
+.filter__list::-webkit-scrollbar {
+  width: 4px;
+  height: 0px;
+}
+
+.filter__list::-webkit-scrollbar-track {
+  background-color: #4b4949;
+}
+
+.filter__list::-webkit-scrollbar-thumb {
+  background: #fff;
+  border-radius: 2px;
+}
+
+.filter__item {
+  font-family: StratosSkyeng;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+
+}
+
+
+
 
 .content__title {
   display: -webkit-box;
@@ -380,7 +442,7 @@ body {
 
 .col04 {
   width: 60px;
-  text-align: end;
+  text-align: flex-end;
 }
 
 .playlist__item {
@@ -399,7 +461,7 @@ body {
   flex-direction: row;
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
-  justify-content: space-between;
+  justify-content: flex-start;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
@@ -518,8 +580,8 @@ body {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: end;
-  -ms-flex-pack: end;
+  -webkit-box-pack: flex-end;
+  -ms-flex-pack: flex-end;
   justify-content: flex-end;
   padding: 12px 0 15px 0;
 }
@@ -574,7 +636,14 @@ body {
   height: 150px;
 }
 
-.sidebar__item:not(:last-child) {
+.sidebar__item-skeleton {
+  width: 250px;
+  height: 150px;
+  background: #313131;
+}
+
+.sidebar__item,
+.sidebar__item-skeleton:not(:last-child) {
   margin-bottom: 30px;
 }
 
@@ -752,7 +821,7 @@ body {
   display: grid;
   -ms-grid-columns: auto 1fr;
   grid-template-columns: auto 1fr;
-  grid-template-areas: "image author" "image album";
+  grid-template-areas: "image author""image album";
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
@@ -772,7 +841,11 @@ body {
   -ms-flex-pack: center;
   justify-content: center;
   margin-right: 12px;
+  -ms-grid-row: 1;
+  grid-row: 1;
   -ms-grid-row-span: 2;
+  -ms-grid-column: 1;
+  grid-column: 1;
   grid-area: image;
 }
 
@@ -784,6 +857,10 @@ body {
 }
 
 .track-play__author {
+  -ms-grid-row: 1;
+  grid-row: 1;
+  -ms-grid-column: 2;
+  grid-column: 2;
   grid-area: author;
   min-width: 49px;
 }
@@ -798,7 +875,10 @@ body {
 }
 
 .track-play__album {
-
+  -ms-grid-row: 2;
+  grid-row: 2;
+  -ms-grid-column: 2;
+  grid-column: 2;
   grid-area: album;
   min-width: 49px;
 }
@@ -859,9 +939,9 @@ body {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: end;
-  -ms-flex-pack: end;
-  justify-content: end;
+  -webkit-box-pack: flex-end;
+  -ms-flex-pack: flex-end;
+  justify-content: flex-end;
 }
 
 .volume__image {
@@ -882,4 +962,39 @@ body {
 
 .volume__progress-line {
   width: 109px;
+}
+
+.rectangle8 {
+  width: 51px;
+  height: 51px;
+  flex-shrink: 0;
+  background: #313131
+}
+
+.rectangle11 {
+  width: 356px;
+  height: 19px;
+  flex-shrink: 0;
+  background: #313131
+}
+
+.rectangle12 {
+  width: 271px;
+  height: 19px;
+  flex-shrink: 0;
+  background: #313131
+}
+
+.rectangle13 {
+  width: 305px;
+  height: 19px;
+  flex-shrink: 0;
+  background: #313131
+}
+
+.rectangle5915 {
+  width: 59px;
+  height: 15px;
+  flex-shrink: 0;
+  background: #313131
 }
