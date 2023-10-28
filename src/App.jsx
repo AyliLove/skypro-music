@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import Bar from './components/Bar'
-import Main from './components/Main'
-import './styles/App.css'
+import Bar from './components/Bar/Bar'
+import Main from './components/Main/Main'
+import './App.css'
 import loadingContext from './components/Context'
+import * as S from './App.styles'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -10,7 +11,7 @@ const App = () => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setLoading(false)
-    }, 3000)
+    }, 1000)
     return () => {
       clearTimeout(timeoutId)
     }
@@ -18,15 +19,12 @@ const App = () => {
 
   return (
     <loadingContext.Provider value={loading}>
-      <div className="App">
-        <div className="wrapper">
-          <div className="container">
-            <Main />
-            <Bar />
-            <footer className="footer" />
-          </div>
-        </div>
-      </div>
+      <S.WrapperDiv>
+        <S.ContainerDiv>
+          <Main />
+          <Bar />
+        </S.ContainerDiv>
+      </S.WrapperDiv>
     </loadingContext.Provider>
   )
 }
