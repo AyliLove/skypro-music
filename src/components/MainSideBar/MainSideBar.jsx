@@ -8,7 +8,7 @@ const MainSideBar = () => {
   return (
     <S.MainSideBarDiv>
       <S.SideBarPersonalDiv>
-        <S.SideBarPersonalName>Ilya Shlepin</S.SideBarPersonalName>
+        <S.SideBarPersonalName>Sergey.Ivanov</S.SideBarPersonalName>
         <S.SideBarIconDiv>
           <svg alt="logout">
             <use xlinkHref="img/icon/sprite.svg#logout" />
@@ -21,18 +21,18 @@ const MainSideBar = () => {
             <S.SideBarItemSkeletonDiv />
           ) : (
             <S.SideBarItemDiv>
-              <S.SideBarLinkA href="#top">
+              <S.RouteSideBarLink to="/Category/1">
                 <S.SideBarImg src="img/playlist01.png" alt="day's playlist" />
-              </S.SideBarLinkA>
+              </S.RouteSideBarLink>
             </S.SideBarItemDiv>
           )}
           {loading ? (
             <S.SideBarItemSkeletonDiv />
           ) : (
             <S.SideBarItemDiv>
-              <S.SideBarLinkA href="#top">
+              <S.RouteSideBarLink to="/Category/2">
                 <S.SideBarImg src="img/playlist02.png" alt="day's playlist" />
-              </S.SideBarLinkA>
+              </S.RouteSideBarLink>
             </S.SideBarItemDiv>
           )}
 
@@ -40,9 +40,9 @@ const MainSideBar = () => {
             <S.SideBarItemSkeletonDiv />
           ) : (
             <S.SideBarItemDiv>
-              <S.SideBarLinkA href="#top">
+              <S.RouteSideBarLink to="/Category/3">
                 <S.SideBarImg src="img/playlist03.png" alt="day's playlist" />
-              </S.SideBarLinkA>
+              </S.RouteSideBarLink>
             </S.SideBarItemDiv>
           )}
         </S.SideBarListDiv>

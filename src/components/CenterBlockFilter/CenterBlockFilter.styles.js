@@ -79,7 +79,7 @@ export const FilterListUl = styled.ul`
   }
 `
 export const FilterItem = styled.li`
-  font-family: StratosSkyeng;
+  font-family: "StratosSkyeng", sans-serif;
   font-size: 20px;
   font-weight: 400;
   line-height: 24px;

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Link, NavLink } from 'react-router-dom'
 
 export const MainNav = styled.nav`
   width: 244px;
@@ -41,20 +42,31 @@ export const BurgerLine = styled.span`
   height: 1px;
   background-color: #d3d3d3;
 `
-export const NavMenu = styled.div`
+export const NavMenuDiv = styled.div`
   display: block;
   visibility: visible;
 `
-export const MenuList = styled.ul`
+export const MenuListUl = styled.ul`
   padding: 18px 0 10px 0;
 `
-export const MenuItem = styled.li`
+export const MenuItemLi = styled.li`
   padding: 5px 0;
   margin-bottom: 16px;
 `
-export const MenuLink = styled.a`
+// export const MenuLink = styled.a`
+// color: #ffffff;
+// font-weight: 400;
+// font-size: 16px;
+// line-height: 24px;
+// `
+
+export const RouteMenuLink = styled(NavLink)`
 color: #ffffff;
 font-weight: 400;
 font-size: 16px;
 line-height: 24px;
+text-decoration: none;
+&.active {
+  text-decoration: underline;
+}
 `

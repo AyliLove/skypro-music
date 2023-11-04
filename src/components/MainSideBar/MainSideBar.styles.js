@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export const MainSideBarDiv  = styled.div`
@@ -72,7 +73,11 @@ export const SideBarItemSkeletonDiv = styled.div`
   background: #313131;
   margin-bottom: 30px;
 `
-export const SideBarLinkA  = styled.a`
+// export const SideBarLinkA  = styled.a`
+//   width: 100%;
+//   height: 100%;
+// `
+export const RouteSideBarLink  = styled(Link)`
   width: 100%;
   height: 100%;
 `

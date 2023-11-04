@@ -1,10 +1,13 @@
 import { useState } from 'react'
-import * as S from './NavMenu.styles'
+import * as S from './NavMenu.styles.js'
 
 export const NavMenu = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(true)
   const toggleMenuOpen = () => {
     setMenuOpen(!menuOpen)
+  }
+  const handleLogout = () => {
+    localStorage.removeItem('login');
   }
 
   return (
@@ -18,25 +21,29 @@ export const NavMenu = () => {
         <S.BurgerLine/>
       </S.NavBurger>
       {menuOpen ? (
-        <S.NavMenu>
-          <S.MenuList>
-            <S.MenuItem>
-              <S.MenuLink href="#top">
+        <S.NavMenuDiv>
+          <S.MenuListUl>
+            
+            <S.MenuItemLi>
+              <S.RouteMenuLink to="/">
                 Главное
-              </S.MenuLink>
-            </S.MenuItem>
-            <S.MenuItem>
-              <S.MenuLink href="#top">
+              </S.RouteMenuLink>
+            </S.MenuItemLi>
+
+            <S.MenuItemLi>
+              <S.RouteMenuLink to="./favorites">
                 Мой плейлист
-              </S.MenuLink>
-            </S.MenuItem>
-            <S.MenuItem>
-              <S.MenuLink href="../signin.html">
-                Войти
-              </S.MenuLink>
-            </S.MenuItem>
-          </S.MenuList>
-        </S.NavMenu>
+              </S.RouteMenuLink>
+            </S.MenuItemLi>
+            
+            <S.MenuItemLi>
+              <S.RouteMenuLink onClick={handleLogout} to="./login">
+                Выйти
+              </S.RouteMenuLink>
+            </S.MenuItemLi>
+
+          </S.MenuListUl>
+        </S.NavMenuDiv>
       ) : null}
     </S.MainNav>
   )

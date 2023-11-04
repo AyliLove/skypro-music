@@ -1,31 +1,26 @@
-import { useState, useEffect } from 'react'
-import Bar from './components/Bar/Bar'
-import Main from './components/Main/Main'
-import './App.css'
-import loadingContext from './components/Context'
+import { useState } from 'react'
 import * as S from './App.styles'
+import { AppRoutes } from './components/routes'
+import { GlobalStyle } from './components/GlobalStyle/GlobalStyle'
 
 const App = () => {
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setLoading(false)
-    }, 1000)
-    return () => {
-      clearTimeout(timeoutId)
-    }
-  }, [])
+  const [user, setUser] = useState(null);
+
+  const handleLogin = () => {
+    localStorage.setItem('login', 'SetLogin');
+    const getUser = localStorage.getItem('login');
+    setUser(getUser);
+    console.log(getUser);
+  }
 
   return (
-    <loadingContext.Provider value={loading}>
       <S.WrapperDiv>
+        <GlobalStyle />
         <S.ContainerDiv>
-          <Main />
-          <Bar />
+          <AppRoutes user={user} onClick={handleLogin}/>
         </S.ContainerDiv>
       </S.WrapperDiv>
-    </loadingContext.Provider>
   )
 }
 
