@@ -5,11 +5,11 @@ const PlayListItemSkeleton = () => {
     <S.PlaylistItemDiv>
       <S.PlaylistTrackDiv>
         <S.TrackTitleDiv>
-          <S.TrackTitleImageDiv>
+          <S.TrackTitleImageSkeletonDiv>
             <S.TrackTitleSvg alt="music">
               <use xlinkHref="img/icon/sprite.svg#icon-note" />
             </S.TrackTitleSvg>
-          </S.TrackTitleImageDiv>
+          </S.TrackTitleImageSkeletonDiv>
           <S.TrackTitleTextDiv>
             <S.Rectangle11Div />
           </S.TrackTitleTextDiv>

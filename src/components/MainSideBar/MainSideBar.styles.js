@@ -1,5 +1,17 @@
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
+
+const SkeletonAnim = keyframes`
+    0%   {
+        background-color: #313131;
+    }
+    50%  {
+        background-color: rgb(167, 167, 167);
+    }
+    100%  {
+        background-color: #313131;
+    }
+`;
 
 export const MainSideBarDiv  = styled.div`
   max-width: 418px;
@@ -72,11 +84,9 @@ export const SideBarItemSkeletonDiv = styled.div`
   height: 150px;
   background: #313131;
   margin-bottom: 30px;
+  animation: ${SkeletonAnim} 3s linear infinite both;
 `
-// export const SideBarLinkA  = styled.a`
-//   width: 100%;
-//   height: 100%;
-// `
+
 export const RouteSideBarLink  = styled(Link)`
   width: 100%;
   height: 100%;

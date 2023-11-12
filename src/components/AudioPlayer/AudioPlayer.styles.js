@@ -108,7 +108,7 @@ export const PlayerBtnRepeatSvg = styled.svg`
   width: 18px;
   height: 12px;
   fill: transparent;
-  stroke: #696969;
+  stroke: ${(props) => (props.$stroke ? '#D9D9D9' : '#696969')};
 `
 export const PlayerBtnShuffleSvg = styled.svg`
   width: 19px;
@@ -262,14 +262,19 @@ export const VolumeImageDiv = styled.div`
   height: 18px;
   margin-right: 17px;
 `
-export const VolumeSvg  = styled.svg`
+export const VolumeSvg = styled.svg`
   width: 13px;
   height: 18px;
   fill: transparent;
 `
-export const VolumeProgressDiv  = styled.div`
+export const VolumeProgressDiv = styled.div`
   width: 109px;
 `
-export const VolumeProgressLineInput  = styled.input`
+export const VolumeProgressLineInput = styled.input`
   width: 109px;
+`
+export const TimeCode = styled.div`
+    color: #696969;
+    text-align: end;
+    margin: 10px 50px 10px;
 `

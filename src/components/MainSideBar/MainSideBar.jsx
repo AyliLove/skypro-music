@@ -3,7 +3,7 @@ import loadingContext from '../Context'
 import * as S from './MainSideBar.styles.js'
 
 const MainSideBar = () => {
-  const loading = useContext(loadingContext)
+  const { loading } = useContext(loadingContext)
 
   return (
     <S.MainSideBarDiv>

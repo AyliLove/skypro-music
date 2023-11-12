@@ -1,4 +1,16 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
+
+const SkeletonAnim = keyframes`
+    0%   {
+        background-color: #313131;
+    }
+    50%  {
+        background-color: rgb(167, 167, 167);
+    }
+    100%  {
+        background-color: #313131;
+    }
+`
 
 export const CenterBlockContentDiv = styled.div`
   display: -webkit-box;
@@ -101,6 +113,9 @@ export const TrackTitleImageDiv = styled.div`
   justify-content: center;
   margin-right: 17px;
 `
+export const TrackTitleImageSkeletonDiv = styled(TrackTitleImageDiv)`
+  animation: ${SkeletonAnim} 3s linear infinite both;
+`
 
 export const TrackTitleSvg = styled.svg`
   width: 18px;
@@ -173,16 +188,19 @@ export const Rectangle11Div = styled.div`
   height: 19px;
   flex-shrink: 0;
   background: #313131;
+  animation: ${SkeletonAnim} 3s linear infinite both;
 `
 export const Rectangle12Div = styled.div`
   width: 271px;
   height: 19px;
   flex-shrink: 0;
   background: #313131;
+  animation: ${SkeletonAnim} 3s linear infinite both;
 `
 export const Rectangle13Div = styled.div`
   width: 225px;
   height: 19px;
   flex-shrink: 0;
   background: #313131;
+  animation: ${SkeletonAnim} 3s linear infinite both;
 `

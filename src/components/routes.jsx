@@ -5,7 +5,7 @@ import { Favorites } from './Pages/Favorites'
 import { Register } from './Pages/Register'
 import { NotFound } from './Pages/not-found'
 import { Category } from './Pages/Category'
-import { ProtectedRoute } from './ProtectedRoute'
+import { ProtectedRoute } from './ProtectedRoute/ProtectedRoute'
 
 export const AppRoutes = ({user, onClick}) => {
   return (
