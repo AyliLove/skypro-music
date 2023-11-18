@@ -1,9 +1,8 @@
-import React from "react";
-import * as S from "./loginStyles"
-import { Link } from "react-router-dom";
+import React from 'react'
+import * as S from './loginStyles'
+import { Link } from 'react-router-dom'
 
-export const Login = ({onClick}) => {
-
+export const Login = ({ onClick }) => {
   return (
     <S.LoginBox>
       <S.LoginImg src="img/logo_modal.png" alt="" />
@@ -16,5 +15,5 @@ export const Login = ({onClick}) => {
         <S.LoginButtonReg>Зарегистрироваться</S.LoginButtonReg>
       </Link>
     </S.LoginBox>
-  );
-};
+  )
+}

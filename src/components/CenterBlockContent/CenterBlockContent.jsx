@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
-import loadingContext from '../Context'
+import { loadingContext } from '../Context'
 import PlayListItemSkeleton from './PlayListItemSkeleton'
 import * as S from './CenterBlockContent.styles.js'
 import { getAllTracks } from '../../api.js'
+import { userContext } from '../../App.jsx'
 
 const CenterBlockContent = () => {
-  const { loading, setLoading, setCurrentTrack } = useContext(loadingContext)
+  const { loading, setLoading } = useContext(loadingContext)
+  const {  setCurrentTrack } = useContext(userContext)
 
   const [allTracks, setAllTracks] = useState([])
   const [getTracksError, setGetTracksError] = useState(null)
