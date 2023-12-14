@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { loadingContext } from '../Context'
+import { loadingContext } from '../../Context'
 import * as S from './AudioPlayer.styles'
 import {
   ProgressInputTrack,
