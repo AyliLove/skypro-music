@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 import * as S from './App.styles'
-import { AppRoutes } from './components/routes'
+import { AppRoutes } from './routes'
 import { GlobalStyle } from './components/GlobalStyle/GlobalStyle'
 
 export const userContext = createContext()
@@ -8,20 +8,23 @@ export const userContext = createContext()
 const App = () => {
   const [currentTrack, setCurrentTrack] = useState(null)
 
-  const getUser = localStorage.getItem('user')
-  const [user, setUser] = useState(getUser)
+  const [user, setUser] = useState(localStorage.getItem('user'))
 
   const handleLogoff = () => {
     setUser(null)
+    setCurrentTrack(null)
+    localStorage.removeItem('user')
   }
 
-  useEffect(() => {
-    localStorage.setItem('user', user)
-  }, [user])
-
+  // useEffect(() => {
+  //   localStorage.setItem('user', user)
+  //   console.log(user)
+  // }, [user])
 
   return (
-    <userContext.Provider value={{ user, setUser, handleLogoff, currentTrack, setCurrentTrack }}>
+    <userContext.Provider
+      value={{ user, setUser, handleLogoff, currentTrack, setCurrentTrack }}
+    >
       <S.WrapperDiv>
         <GlobalStyle />
         <S.ContainerDiv>

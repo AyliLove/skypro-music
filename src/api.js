@@ -54,7 +54,7 @@ export async function userLogin({ email, password }) {
   if (response.status === 500) {
     throw new Error('Сервер упал, попробуй позже')
   }
-  //!!
+
   const user = await response.json()
   return user
 }

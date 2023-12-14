@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react'
 import * as S from './NavMenu.styles.js'
 import { userContext } from '../../App.jsx'
-import { loadingContext } from '../Context.jsx'
 
 export const NavMenu = () => {
   const [menuOpen, setMenuOpen] = useState(true)
