@@ -1,30 +1,44 @@
-import { useContext, useEffect, useState } from 'react'
-import { loadingContext } from '../Context'
+import { useContext, useDebugValue, useEffect, useState } from 'react'
+import { loadingContext } from '../../Context'
 import PlayListItemSkeleton from './PlayListItemSkeleton'
 import * as S from './CenterBlockContent.styles.js'
 import { getAllTracks } from '../../api.js'
 import { userContext } from '../../App.jsx'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  setCurrentTrack,
+  setPlayList,
+  stopTrack,
+} from '../../store/playerSlice.js'
+import { current } from '@reduxjs/toolkit'
 
 const CenterBlockContent = () => {
   const { loading, setLoading } = useContext(loadingContext)
-  const {  setCurrentTrack } = useContext(userContext)
+  const dispatch = useDispatch()
+  const currentTrack = useSelector((state) => state.playerApp.currentTrack)
+  const isPlaying = useSelector((state) => state.playerApp.isPlaying)
 
-  const [allTracks, setAllTracks] = useState([])
+  const allTracks = useSelector((state) => state.playerApp.ordinalPlayList)
   const [getTracksError, setGetTracksError] = useState(null)
-
+  
+  
   useEffect(() => {
     getAllTracks()
-      .then((allTracks) => {
-        setAllTracks(allTracks)
-      })
+    .then((allTracks) => {
+      dispatch(setPlayList({ playList: allTracks }))
+      console.log('получили все треки')
+      console.log(allTracks)
+    })
       .catch((error) => {
         console.log(`Ошибка загрузки`)
         setGetTracksError(error.message)
       })
       .finally(() => {
         setLoading(false)
+        console.log(isPlaying)
       })
   }, [])
+
 
   const durationToString = (duration) => {
     let minutes = String(Math.trunc(duration / 60))
@@ -67,15 +81,21 @@ const CenterBlockContent = () => {
               <S.PlaylistItemDiv
                 key={track.id}
                 onClick={() => {
-                  setCurrentTrack(track)
+                  dispatch(setCurrentTrack({ track }))
                 }}
               >
                 <S.PlaylistTrackDiv>
                   <S.TrackTitleDiv>
                     <S.TrackTitleImageDiv>
-                      <S.TrackTitleSvg alt="music">
-                        <use xlinkHref="img/icon/sprite.svg#icon-note" />
-                      </S.TrackTitleSvg>
+                      {!currentTrack || currentTrack.id !== track.id ? (
+                        <S.TrackTitleSvg alt="music">
+                          <use xlinkHref="img/icon/sprite.svg#icon-note" />
+                        </S.TrackTitleSvg>
+                      ) : isPlaying ? (
+                        <S.BlinkingDot />
+                      ) : (
+                        <S.PurpleDot />
+                      )}
                     </S.TrackTitleImageDiv>
                     <S.TrackTitleTextDiv>
                       <S.TrackTitleLinkA href="#">

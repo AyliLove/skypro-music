@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react'
 import * as S from './ProgressBar.styles'
 import { forwardRef } from 'react'
 
+export const ProgressInputTrackDefault = () => {
+  return (
+    <S.ProgressInput
+      type="range"
+      value={0}
+    />
+  )
+}
+
 export const ProgressInputTrack = forwardRef((props, ref) => {
   ProgressInputTrack.displayName = 'ProgressInputTrack'
 
@@ -14,6 +23,9 @@ export const ProgressInputTrack = forwardRef((props, ref) => {
 
   useEffect(() => {
     setCurrentTime(ref.current.currentTime)
+    if (ref.current.currentTime === ref.current.duration) {
+      setCurrentTime(0)
+    }
   }, [ref.current.currentTime])
 
   return (
