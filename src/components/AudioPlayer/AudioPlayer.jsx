@@ -3,13 +3,26 @@ import { loadingContext } from '../../Context'
 import * as S from './AudioPlayer.styles'
 import {
   ProgressInputTrack,
+  ProgressInputTrackDefault,
   ProgressInputVolume,
 } from '../ProgressBar/ProgressBar'
 import { userContext } from '../../App'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  nextTrack,
+  prevTrack,
+  playTrack,
+  stopTrack,
+  shuffleTrack,
+} from '../../store/playerSlice'
 
 const AudioPlayer = () => {
-  const { currentTrack } = useContext(userContext)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const dispatch = useDispatch()
+  const currentTrack = useSelector((state) => state.playerApp.currentTrack)
+
+  const isPlaying = useSelector((state) => state.playerApp.isPlaying)
+  const isShuffle = useSelector((state) => state.playerApp.isShuffle)
+
   const [isLoop, setIsLoop] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -19,18 +32,30 @@ const AudioPlayer = () => {
   const track_file = currentTrack.track_file
 
   const handlePlay = () => {
+    dispatch(playTrack())
+    console.log('заиграли снова')
     audioRef.current.play()
-    setIsPlaying(true)
   }
 
   const handleStop = () => {
+    dispatch(stopTrack())
     audioRef.current.pause()
-    setIsPlaying(false)
   }
 
   const handleLoop = () => {
     audioRef.current.loop = !isLoop
     setIsLoop(!isLoop)
+  }
+
+  const handleNextTrack = () => {
+    dispatch(nextTrack())
+  }
+  const handlePrevTrack = () => {
+    if (audioRef.current.currentTime > 5) audioRef.current.currentTime = 0
+    else dispatch(prevTrack())
+  }
+  const handleShuffleTrack = () => {
+    dispatch(shuffleTrack())
   }
 
   const timeToString = (time) => {
@@ -44,13 +69,16 @@ const AudioPlayer = () => {
     alert('Функционал еще не реализован')
   }
 
-  useEffect(handlePlay, [currentTrack])
+  useEffect(() => {
+    {
+      handlePlay()
+      console.log('useEffect handlePlay')
+    }
+  }, [currentTrack])
 
   const handleEndTrack = () => {
-    setIsPlaying(false)
+    dispatch(nextTrack())
     setCurrentTime(timeToString(0))
-
-    console.log('end')
   }
 
   useEffect(() => {
@@ -69,7 +97,6 @@ const AudioPlayer = () => {
     return () => {
       audioRef.current?.removeEventListener('timeupdate', handleTimeUpdate)
       audioRef.current?.removeEventListener('ended', handleEndTrack)
-      console.log('done')
     }
   })
 
@@ -84,12 +111,12 @@ const AudioPlayer = () => {
 
           {audioRef.current.duration ? (
             <ProgressInputTrack ref={audioRef} />
-          ) : null}
+          ) : <ProgressInputTrackDefault />}
 
           <S.BarPlayerBlockDiv>
             <S.BarPlayerDiv>
               <S.PlayerControlsDiv>
-                <S.PlayerBtnPrevDiv onClick={awaitImplementation}>
+                <S.PlayerBtnPrevDiv onClick={handlePrevTrack}>
                   <S.PlayerBtnPrevSvg alt="prev">
                     <use xlinkHref="img/icon/sprite.svg#icon-prev" />
                   </S.PlayerBtnPrevSvg>
@@ -109,14 +136,13 @@ const AudioPlayer = () => {
                   </S.PlayerBtnPlayDiv>
                 )}
 
-                <S.PlayerBtnNextDiv onClick={awaitImplementation}>
+                <S.PlayerBtnNextDiv onClick={handleNextTrack}>
                   <S.PlayerBtnNextSvg alt="next">
                     <use xlinkHref="img/icon/sprite.svg#icon-next" />
                   </S.PlayerBtnNextSvg>
                 </S.PlayerBtnNextDiv>
 
                 <S.PlayerBtnRepeatDiv
-                  // className="_btn-icon"
                   onClick={handleLoop}
                 >
                   <S.PlayerBtnRepeatSvg alt="repeat" $stroke={isLoop}>
@@ -124,8 +150,8 @@ const AudioPlayer = () => {
                   </S.PlayerBtnRepeatSvg>
                 </S.PlayerBtnRepeatDiv>
 
-                <S.PlayerBtnShuffleDiv onClick={awaitImplementation}>
-                  <S.PlayerBtnShuffleSvg alt="shuffle">
+                <S.PlayerBtnShuffleDiv onClick={handleShuffleTrack}>
+                  <S.PlayerBtnShuffleSvg alt="shuffle" $stroke={isShuffle}>
                     <use xlinkHref="img/icon/sprite.svg#icon-shuffle" />
                   </S.PlayerBtnShuffleSvg>
                 </S.PlayerBtnShuffleDiv>
