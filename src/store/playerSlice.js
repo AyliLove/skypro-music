@@ -15,10 +15,18 @@ const playerSlice = createSlice({
     setCurrentTrack(state, action) {
       state.isPlaying = true
       state.currentTrack = action.payload.track
+      // console.log(state.playList)
       state.currentTrackId = state.playList.findIndex(
         (el) => el.id === state.currentTrack.id,
       )
       console.log(state.currentTrackId)
+    },
+
+    clearCurrentTrack(state, action) {
+      state.isPlaying = false
+      state.isShuffle = false
+      state.currentTrack = null
+      state.currentTrackId = null
     },
 
     setPlayList(state, action) {
@@ -39,7 +47,7 @@ const playerSlice = createSlice({
       if (state.playList[state.currentTrackId + 1]) {
         state.currentTrack = state.playList[state.currentTrackId + 1]
         state.currentTrackId++
-      }
+      } 
     },
 
     prevTrack(state, action) {
@@ -66,12 +74,12 @@ const playerSlice = createSlice({
         state.playList = state.ordinalPlayList
       }
     },
-
   },
 })
 
 export const {
   setCurrentTrack,
+  clearCurrentTrack,
   setPlayList,
   playTrack,
   stopTrack,

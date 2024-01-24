@@ -45,7 +45,7 @@ export const ContentPlaylistDiv = styled.div`
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  height: calc(100vh - 350px);
+  height: calc(100vh - 500px);
   overflow-y: scroll;
 `
 export const PlaylistTitleColDiv = styled.div`
