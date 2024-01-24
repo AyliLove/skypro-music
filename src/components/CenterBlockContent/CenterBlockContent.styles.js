@@ -45,7 +45,8 @@ export const ContentPlaylistDiv = styled.div`
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  overflow-y: auto;
+  height: calc(100vh - 500px);
+  overflow-y: scroll;
 `
 export const PlaylistTitleColDiv = styled.div`
   font-style: normal;
@@ -203,4 +204,26 @@ export const Rectangle13Div = styled.div`
   flex-shrink: 0;
   background: #313131;
   animation: ${SkeletonAnim} 3s linear infinite both;
+`
+
+export const PurpleDot = styled.div`
+  width: 150px;
+  height: 15px;
+  background-color: purple;
+  border-radius: 50%;
+`
+
+const blinkAnimation = keyframes`
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+`
+export const BlinkingDot = styled(PurpleDot)`
+  animation: ${blinkAnimation} 1s infinite;
 `

@@ -1,13 +1,5 @@
 import styled from 'styled-components'
 
-export const MainCenterBlockDiv = styled.div`
-  width: auto;
-  -webkit-box-flex: 3;
-  -ms-flex-positive: 3;
-  flex-grow: 3;
-  padding: 20px 40px 20px 111px;
-`
-
 export const CenterBlockH2 = styled.h2`
   font-style: normal;
   font-weight: 400;

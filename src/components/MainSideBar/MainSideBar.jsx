@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { loadingContext } from '../Context'
+import { loadingContext } from '../../Context'
 import * as S from './MainSideBar.styles.js'
 import { userContext } from '../../App.jsx'
 

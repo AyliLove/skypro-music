@@ -1,27 +1,38 @@
 import { createContext, useEffect, useState } from 'react'
 import * as S from './App.styles'
-import { AppRoutes } from './components/routes'
+import { AppRoutes } from './routes'
 import { GlobalStyle } from './components/GlobalStyle/GlobalStyle'
+import { useDispatch } from 'react-redux'
+import { setCurrentTrack, stopTrack, clearCurrentTrack } from './store/playerSlice'
 
 export const userContext = createContext()
 
 const App = () => {
-  const [currentTrack, setCurrentTrack] = useState(null)
+  const dispatch = useDispatch()
+  
 
-  const getUser = localStorage.getItem('user')
-  const [user, setUser] = useState(getUser)
+  const [user, setUser] = useState(localStorage.getItem('user'))
 
   const handleLogoff = () => {
     setUser(null)
+    dispatch(stopTrack())
+    dispatch(clearCurrentTrack())
+    localStorage.removeItem('user')
   }
 
-  useEffect(() => {
-    localStorage.setItem('user', user)
-  }, [user])
-
+  // useEffect(() => {
+  //   localStorage.setItem('user', user)
+  //   console.log(user)
+  // }, [user])
 
   return (
-    <userContext.Provider value={{ user, setUser, handleLogoff, currentTrack, setCurrentTrack }}>
+    <userContext.Provider
+      value={{
+        user,
+        setUser,
+        handleLogoff,
+      }}
+    >
       <S.WrapperDiv>
         <GlobalStyle />
         <S.ContainerDiv>
