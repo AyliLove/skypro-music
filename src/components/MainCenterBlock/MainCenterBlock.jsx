@@ -9,7 +9,9 @@ const MainCenterBlock = () => {
       <CenterBlockSearch />
       <S.CenterBlockH2>Треки</S.CenterBlockH2>
       <CenterBlockFilter />
+      
       <CenterBlockContent />
+      
     </S.MainCenterBlockDiv>
   )
 }

@@ -3,12 +3,7 @@ import * as S from './ProgressBar.styles'
 import { forwardRef } from 'react'
 
 export const ProgressInputTrackDefault = () => {
-  return (
-    <S.ProgressInput
-      type="range"
-      value={0}
-    />
-  )
+  return <S.ProgressInput type="range" value={0} />
 }
 
 export const ProgressInputTrack = forwardRef((props, ref) => {
@@ -32,7 +27,7 @@ export const ProgressInputTrack = forwardRef((props, ref) => {
     <S.ProgressInput
       type="range"
       min={0}
-      max={ref.current.duration}
+      max={ref.current.duration ? ref.current.duration : 0}
       value={currentTime}
       step={0.01}
       onChange={(e) => handleCurrentTime(e.target.value)}
@@ -43,11 +38,16 @@ export const ProgressInputTrack = forwardRef((props, ref) => {
 export const ProgressInputVolume = forwardRef((props, ref) => {
   ProgressInputVolume.displayName = 'ProgresInputVolume'
 
-  const [volume, setVolume] = useState(0.5)
-  const handleVolume = (value) => {
-    setVolume(value)
-    ref.current.volume = value
-  }
+  const [volume, setVolume] = useState(0.1)
+
+  // const handleVolume = (value) => {
+  //   setVolume(value)
+  //   ref.current.volume = value
+  // }
+
+  useEffect(() => {
+    ref.current.volume = volume
+  }, [volume])
 
   return (
     <S.ProgressInput
@@ -56,7 +56,7 @@ export const ProgressInputVolume = forwardRef((props, ref) => {
       max={1}
       value={volume}
       step={0.01}
-      onChange={(e) => handleVolume(e.target.value)}
+      onChange={(e) => setVolume(e.target.value)}
     />
   )
 })

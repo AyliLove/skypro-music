@@ -14,12 +14,17 @@ import {
   playTrack,
   stopTrack,
   shuffleTrack,
+  clearCurrentTrack,
 } from '../../store/playerSlice'
 
 const AudioPlayer = () => {
   const dispatch = useDispatch()
-  const currentTrack = useSelector((state) => state.playerApp.currentTrack)
+  // const { currentTrack } = useContext(userContext)
+  const { currentTrack, currentTrackId, playList } = useSelector(
+    (state) => state.playerApp,
+  )
 
+  // const [isPlaying, setIsPlaying] = useState(false)
   const isPlaying = useSelector((state) => state.playerApp.isPlaying)
   const isShuffle = useSelector((state) => state.playerApp.isShuffle)
 
@@ -31,10 +36,26 @@ const AudioPlayer = () => {
 
   const track_file = currentTrack.track_file
 
+  // const handlePlay = () => {
+  //   dispatch(playTrack())
+  //   console.log('заиграли снова')
+  //   audioRef.current.play().catch((error) => {
+  //     console.log(error)
+  //     audioRef.current.pause()
+  //   })
+  // }
+
+  useEffect(() => {
+    if (!isPlaying) {
+      audioRef.current.pause()
+    }
+  }, [isPlaying])
+
   const handlePlay = () => {
     dispatch(playTrack())
-    console.log('заиграли снова')
-    audioRef.current.play()
+    if (audioRef.current.paused) {
+      audioRef.current.play().catch(() => audioRef.current.pause())
+    }
   }
 
   const handleStop = () => {
@@ -50,12 +71,24 @@ const AudioPlayer = () => {
   const handleNextTrack = () => {
     dispatch(nextTrack())
   }
+
   const handlePrevTrack = () => {
     if (audioRef.current.currentTime > 5) audioRef.current.currentTime = 0
     else dispatch(prevTrack())
   }
+
   const handleShuffleTrack = () => {
     dispatch(shuffleTrack())
+  }
+
+  const handleEndTrack = () => {
+    if (playList[currentTrackId + 1]) {
+      dispatch(nextTrack())
+    } else {
+      dispatch(stopTrack())
+      dispatch(clearCurrentTrack())
+    }
+    setCurrentTime(timeToString(0))
   }
 
   const timeToString = (time) => {
@@ -70,16 +103,8 @@ const AudioPlayer = () => {
   }
 
   useEffect(() => {
-    {
-      handlePlay()
-      console.log('useEffect handlePlay')
-    }
+    handlePlay()
   }, [currentTrack])
-
-  const handleEndTrack = () => {
-    dispatch(nextTrack())
-    setCurrentTime(timeToString(0))
-  }
 
   useEffect(() => {
     const handleTimeUpdate = () => {
@@ -109,9 +134,7 @@ const AudioPlayer = () => {
             {currentTime} / {duration}
           </S.TimeCode>
 
-          {audioRef.current.duration ? (
-            <ProgressInputTrack ref={audioRef} />
-          ) : <ProgressInputTrackDefault />}
+          {audioRef.current && <ProgressInputTrack ref={audioRef} />}
 
           <S.BarPlayerBlockDiv>
             <S.BarPlayerDiv>
@@ -143,6 +166,7 @@ const AudioPlayer = () => {
                 </S.PlayerBtnNextDiv>
 
                 <S.PlayerBtnRepeatDiv
+                  // className="_btn-icon"
                   onClick={handleLoop}
                 >
                   <S.PlayerBtnRepeatSvg alt="repeat" $stroke={isLoop}>

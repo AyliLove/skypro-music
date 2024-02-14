@@ -1,44 +1,23 @@
-import { useContext, useDebugValue, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { loadingContext } from '../../Context'
 import PlayListItemSkeleton from './PlayListItemSkeleton'
 import * as S from './CenterBlockContent.styles.js'
-import { getAllTracks } from '../../api.js'
-import { userContext } from '../../App.jsx'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  setCurrentTrack,
-  setPlayList,
-  stopTrack,
-} from '../../store/playerSlice.js'
-import { current } from '@reduxjs/toolkit'
+import { setCurrentTrack } from '../../store/playerSlice.js'
 
-const CenterBlockContent = () => {
+const CenterBlockContent = (props) => {
   const { loading, setLoading } = useContext(loadingContext)
+  const { getTracksError, setGetTracksError } = useContext(loadingContext)
+  // const {  setCurrentTrack } = useContext(userContext)
   const dispatch = useDispatch()
   const currentTrack = useSelector((state) => state.playerApp.currentTrack)
   const isPlaying = useSelector((state) => state.playerApp.isPlaying)
-
+  // const [allTracks, setAllTracks] = useState([])
   const allTracks = useSelector((state) => state.playerApp.ordinalPlayList)
-  const [getTracksError, setGetTracksError] = useState(null)
-  
-  
-  useEffect(() => {
-    getAllTracks()
-    .then((allTracks) => {
-      dispatch(setPlayList({ playList: allTracks }))
-      console.log('получили все треки')
-      console.log(allTracks)
-    })
-      .catch((error) => {
-        console.log(`Ошибка загрузки`)
-        setGetTracksError(error.message)
-      })
-      .finally(() => {
-        setLoading(false)
-        console.log(isPlaying)
-      })
-  }, [])
 
+  useEffect(() => {
+    props.getAnyTracks()
+  }, [])
 
   const durationToString = (duration) => {
     let minutes = String(Math.trunc(duration / 60))
