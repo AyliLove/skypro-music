@@ -1,17 +1,24 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import * as S from './AuthPage.styles'
 import { useContext, useEffect, useState } from 'react'
-import { userLogin, userRegister } from '../../../api'
-import { userContext } from '../../../App'
+import { userLogin, userRegister } from '../../api'
+import { UserContext } from '../../App'
+import { useGetTokenMutation } from '../../store/api/authApi'
+import { useDispatch } from 'react-redux'
+import { setAuth, setUser } from '../../store/userSlice'
 
 export default function AuthPage({ isLoginMode }) {
-  const { setUser } = useContext(userContext)
+  const dispatch = useDispatch()
+  const { setUser } = useContext(UserContext)
+  const navigate = useNavigate()
 
   const [error, setError] = useState(null)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
+
+  const [getToken, { data }] = useGetTokenMutation()
 
   const getErrorMessage = (obj) => {
     for (let key in obj) {
@@ -21,6 +28,12 @@ export default function AuthPage({ isLoginMode }) {
         setError(obj[key])
       }
     }
+  }
+
+  const handleLogin = (user) => {
+    setUser(user)
+    console.log(user)
+    localStorage.setItem('user', JSON.stringify(user))
   }
 
   const handleLoginAPI = async ({ email, password }) => {
@@ -35,8 +48,22 @@ export default function AuthPage({ isLoginMode }) {
     userLogin({ email, password })
       .then((responseData) => {
         if (responseData.id) {
-          setUser(responseData.username)
-          window.location.href = '/'
+          handleLogin(responseData)
+          getToken({ email, password })
+            .unwrap()
+            .then((data) => {
+              localStorage.setItem('accessToken', data.access)
+              localStorage.setItem('refreshToken', data.refresh)
+              dispatch(
+                setAuth({
+                  accessToken: data.access,
+                  refreshToken: data.refresh,
+                }),
+              )
+            })
+
+         
+          navigate('/')
           return
         }
         getErrorMessage(responseData)
@@ -74,8 +101,8 @@ export default function AuthPage({ isLoginMode }) {
       .then((responseData) => {
         if (responseData.id) {
           alert(`Пользователь ${responseData.username} успешно зарегистрирован`)
-          setUser(responseData.username)
-          window.location.href = '/'
+          handleLogin(responseData.username)
+          navigate('/')
           return
         }
         getErrorMessage(responseData)
@@ -90,6 +117,7 @@ export default function AuthPage({ isLoginMode }) {
         console.warn(error)
       })
   }
+
 
   useEffect(() => {
     setError(null)

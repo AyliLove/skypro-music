@@ -1,15 +1,36 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { loadingContext } from '../Context'
+import { loadingContext } from '../../Context'
 import * as S from './AudioPlayer.styles'
 import {
   ProgressInputTrack,
+  ProgressInputTrackDefault,
   ProgressInputVolume,
 } from '../ProgressBar/ProgressBar'
-import { userContext } from '../../App'
+import { UserContext } from '../../App'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  nextTrack,
+  prevTrack,
+  playTrack,
+  stopTrack,
+  shuffleTrack,
+  clearCurrentTrack,
+  changeTrackLike,
+} from '../../store/playerSlice'
+import {
+  useSetDisLikeMutation,
+  useSetLikeMutation,
+} from '../../store/api/tracksApi'
 
 const AudioPlayer = () => {
-  const { currentTrack } = useContext(userContext)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const dispatch = useDispatch()
+  let { currentTrack, currentTrackId, playList } = useSelector(
+    (state) => state.playerApp,
+  )
+
+  const isPlaying = useSelector((state) => state.playerApp.isPlaying)
+  const isShuffle = useSelector((state) => state.playerApp.isShuffle)
+
   const [isLoop, setIsLoop] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -18,19 +39,54 @@ const AudioPlayer = () => {
 
   const track_file = currentTrack.track_file
 
+  const [setDisLike] = useSetDisLikeMutation()
+  const [setLike] = useSetLikeMutation()
+
+
+  useEffect(() => {
+    if (!isPlaying) {
+      audioRef.current.pause()
+    }
+  }, [isPlaying])
+
   const handlePlay = () => {
-    audioRef.current.play()
-    setIsPlaying(true)
+    dispatch(playTrack())
+    if (audioRef.current.paused) {
+      audioRef.current.play().catch(() => audioRef.current.pause())
+    }
   }
 
   const handleStop = () => {
+    dispatch(stopTrack())
     audioRef.current.pause()
-    setIsPlaying(false)
   }
 
   const handleLoop = () => {
     audioRef.current.loop = !isLoop
     setIsLoop(!isLoop)
+  }
+
+  const handleNextTrack = () => {
+    dispatch(nextTrack())
+  }
+
+  const handlePrevTrack = () => {
+    if (audioRef.current.currentTime > 5) audioRef.current.currentTime = 0
+    else dispatch(prevTrack())
+  }
+
+  const handleShuffleTrack = () => {
+    dispatch(shuffleTrack())
+  }
+
+  const handleEndTrack = () => {
+    if (playList[currentTrackId + 1]) {
+      dispatch(nextTrack())
+    } else {
+      dispatch(stopTrack())
+      dispatch(clearCurrentTrack())
+    }
+    setCurrentTime(timeToString(0))
   }
 
   const timeToString = (time) => {
@@ -44,14 +100,9 @@ const AudioPlayer = () => {
     alert('Функционал еще не реализован')
   }
 
-  useEffect(handlePlay, [currentTrack])
-
-  const handleEndTrack = () => {
-    setIsPlaying(false)
-    setCurrentTime(timeToString(0))
-
-    console.log('end')
-  }
+  useEffect(() => {
+    handlePlay()
+  }, [currentTrack])
 
   useEffect(() => {
     const handleTimeUpdate = () => {
@@ -69,9 +120,15 @@ const AudioPlayer = () => {
     return () => {
       audioRef.current?.removeEventListener('timeupdate', handleTimeUpdate)
       audioRef.current?.removeEventListener('ended', handleEndTrack)
-      console.log('done')
     }
   })
+
+  const handleToggleLike = (e, id, isLiked) => {
+    e.stopPropagation()
+    isLiked ? setDisLike({ id }) : setLike({ id })
+    dispatch(changeTrackLike({isLiked: !isLiked}))
+    console.log(currentTrack)
+  }
 
   return (
     <>
@@ -82,36 +139,34 @@ const AudioPlayer = () => {
             {currentTime} / {duration}
           </S.TimeCode>
 
-          {audioRef.current.duration ? (
-            <ProgressInputTrack ref={audioRef} />
-          ) : null}
+          {audioRef.current && <ProgressInputTrack ref={audioRef} />}
 
           <S.BarPlayerBlockDiv>
             <S.BarPlayerDiv>
               <S.PlayerControlsDiv>
-                <S.PlayerBtnPrevDiv onClick={awaitImplementation}>
+                <S.PlayerBtnPrevDiv onClick={handlePrevTrack}>
                   <S.PlayerBtnPrevSvg alt="prev">
-                    <use xlinkHref="img/icon/sprite.svg#icon-prev" />
+                    <use xlinkHref="/img/icon/sprite.svg#icon-prev" />
                   </S.PlayerBtnPrevSvg>
                 </S.PlayerBtnPrevDiv>
 
                 {isPlaying ? (
                   <S.PlayerBtnPlayDiv className="_btn" onClick={handleStop}>
                     <S.PlayerBtnPlaySvg alt="stop">
-                      <use xlinkHref="img/icon/sprite.svg#icon-pause" />
+                      <use xlinkHref="/img/icon/sprite.svg#icon-pause" />
                     </S.PlayerBtnPlaySvg>
                   </S.PlayerBtnPlayDiv>
                 ) : (
                   <S.PlayerBtnPlayDiv className="_btn" onClick={handlePlay}>
                     <S.PlayerBtnPlaySvg alt="play">
-                      <use xlinkHref="img/icon/sprite.svg#icon-play" />
+                      <use xlinkHref="/img/icon/sprite.svg#icon-play" />
                     </S.PlayerBtnPlaySvg>
                   </S.PlayerBtnPlayDiv>
                 )}
 
-                <S.PlayerBtnNextDiv onClick={awaitImplementation}>
+                <S.PlayerBtnNextDiv onClick={handleNextTrack}>
                   <S.PlayerBtnNextSvg alt="next">
-                    <use xlinkHref="img/icon/sprite.svg#icon-next" />
+                    <use xlinkHref="/img/icon/sprite.svg#icon-next" />
                   </S.PlayerBtnNextSvg>
                 </S.PlayerBtnNextDiv>
 
@@ -120,13 +175,13 @@ const AudioPlayer = () => {
                   onClick={handleLoop}
                 >
                   <S.PlayerBtnRepeatSvg alt="repeat" $stroke={isLoop}>
-                    <use xlinkHref="img/icon/sprite.svg#icon-repeat" />
+                    <use xlinkHref="/img/icon/sprite.svg#icon-repeat" />
                   </S.PlayerBtnRepeatSvg>
                 </S.PlayerBtnRepeatDiv>
 
-                <S.PlayerBtnShuffleDiv onClick={awaitImplementation}>
-                  <S.PlayerBtnShuffleSvg alt="shuffle">
-                    <use xlinkHref="img/icon/sprite.svg#icon-shuffle" />
+                <S.PlayerBtnShuffleDiv onClick={handleShuffleTrack}>
+                  <S.PlayerBtnShuffleSvg alt="shuffle" $stroke={isShuffle}>
+                    <use xlinkHref="/img/icon/sprite.svg#icon-shuffle" />
                   </S.PlayerBtnShuffleSvg>
                 </S.PlayerBtnShuffleDiv>
               </S.PlayerControlsDiv>
@@ -135,7 +190,7 @@ const AudioPlayer = () => {
                 <S.TrackPlayContainDiv>
                   <S.TrackPlayImageDiv>
                     <S.TrackPlaySvg alt="music">
-                      <use xlinkHref="img/icon/sprite.svg#icon-note" />
+                      <use xlinkHref="/img/icon/sprite.svg#icon-note" />
                     </S.TrackPlaySvg>
                   </S.TrackPlayImageDiv>
                   <S.TrackPlayAuthorDiv>
@@ -151,16 +206,31 @@ const AudioPlayer = () => {
                 </S.TrackPlayContainDiv>
 
                 <S.TrackPlayLikeDisDiv>
-                  <S.TrackPlayLikeDiv onClick={awaitImplementation}>
+                  <S.TrackPlayLikeDiv
+                    onClick={(e) =>
+                      handleToggleLike(e, currentTrack.id, currentTrack.isLiked)
+                    }
+                  >
+                    <S.TrackPlayLikeSvg alt="like">
+                      <use
+                        xlinkHref={`/img/icon/sprite.svg#icon-${
+                          currentTrack.isLiked ? '' : 'dis'
+                        }likeMy`}
+                      />
+                    </S.TrackPlayLikeSvg>
+                  </S.TrackPlayLikeDiv>
+
+                  {/* <S.TrackPlayLikeDiv onClick={awaitImplementation}>
                     <S.TrackPlayLikeSvg alt="like">
                       <use xlinkHref="img/icon/sprite.svg#icon-like" />
                     </S.TrackPlayLikeSvg>
                   </S.TrackPlayLikeDiv>
+                  
                   <S.TrackPlayDislikeDiv onClick={awaitImplementation}>
                     <S.TrackPlayDislikeSvg alt="dislike">
                       <use xlinkHref="img/icon/sprite.svg#icon-dislike" />
                     </S.TrackPlayDislikeSvg>
-                  </S.TrackPlayDislikeDiv>
+                  </S.TrackPlayDislikeDiv> */}
                 </S.TrackPlayLikeDisDiv>
               </S.PlayerTrackPlayDiv>
             </S.BarPlayerDiv>
@@ -169,7 +239,7 @@ const AudioPlayer = () => {
               <S.VolumeContentDiv>
                 <S.VolumeImageDiv>
                   <S.VolumeSvg alt="volume">
-                    <use xlinkHref="img/icon/sprite.svg#icon-volume" />
+                    <use xlinkHref="/img/icon/sprite.svg#icon-volume" />
                   </S.VolumeSvg>
                 </S.VolumeImageDiv>
                 <S.VolumeProgressDiv className="_btn">

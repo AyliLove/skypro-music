@@ -1,34 +1,53 @@
 import { createContext, useEffect, useState } from 'react'
 import * as S from './App.styles'
-import { AppRoutes } from './components/routes'
+import { AppRoutes } from './routes'
 import { GlobalStyle } from './components/GlobalStyle/GlobalStyle'
+import { useDispatch } from 'react-redux'
+import {
+  setCurrentTrack,
+  stopTrack,
+  clearCurrentTrack,
+} from './store/playerSlice'
+import { setAuth } from './store/userSlice'
 
-export const userContext = createContext()
+export const UserContext = createContext()
 
 const App = () => {
-  const [currentTrack, setCurrentTrack] = useState(null)
+  const dispatch = useDispatch()
 
-  const getUser = localStorage.getItem('user')
-  const [user, setUser] = useState(getUser)
+  const localstorageUser = localStorage.getItem('user')
+    ? JSON.parse(localStorage.getItem('user'))
+    : ''
+  const [user, setUser] = useState(localstorageUser)
 
   const handleLogoff = () => {
     setUser(null)
+    dispatch(stopTrack())
+    dispatch(clearCurrentTrack())
+    localStorage.removeItem('user')
   }
 
   useEffect(() => {
-    localStorage.setItem('user', user)
-  }, [user])
-
+    const accessToken = localStorage.getItem('accessToken')
+    const refreshToken = localStorage.getItem('refreshToken')
+    dispatch(setAuth({ accessToken, refreshToken }))
+  }, [])
 
   return (
-    <userContext.Provider value={{ user, setUser, handleLogoff, currentTrack, setCurrentTrack }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        handleLogoff,
+      }}
+    >
       <S.WrapperDiv>
         <GlobalStyle />
         <S.ContainerDiv>
           <AppRoutes />
         </S.ContainerDiv>
       </S.WrapperDiv>
-    </userContext.Provider>
+    </UserContext.Provider>
   )
 }
 

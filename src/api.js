@@ -24,8 +24,6 @@ export const userRegister = async ({ name, email, password }) => {
       'content-type': 'application/json',
     },
   }).then((response) => {
-
-
     if (response.status === 201) {
       return response.json()
     }
@@ -47,14 +45,12 @@ export async function userLogin({ email, password }) {
       password: password,
     }),
     headers: {
-   
       'content-type': 'application/json',
     },
   })
   if (response.status === 500) {
-    throw new Error('Сервер упал, попробуй позже')
+    throw new Error('Сервер сломался, попробуй позже')
   }
-  //!!
   const user = await response.json()
   return user
 }

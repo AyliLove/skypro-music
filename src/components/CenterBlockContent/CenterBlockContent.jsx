@@ -1,36 +1,34 @@
 import { useContext, useEffect, useState } from 'react'
-import { loadingContext } from '../Context'
+import { loadingContext } from '../../Context'
 import PlayListItemSkeleton from './PlayListItemSkeleton'
 import * as S from './CenterBlockContent.styles.js'
-import { getAllTracks } from '../../api.js'
-import { userContext } from '../../App.jsx'
+import { useDispatch, useSelector } from 'react-redux'
+import { changeTrackLike, setCurrentTrack } from '../../store/playerSlice.js'
+import {
+  useSetDisLikeMutation,
+  useSetLikeMutation,
+} from '../../store/api/tracksApi.js'
 
-const CenterBlockContent = () => {
-  const { loading, setLoading } = useContext(loadingContext)
-  const {  setCurrentTrack } = useContext(userContext)
 
-  const [allTracks, setAllTracks] = useState([])
-  const [getTracksError, setGetTracksError] = useState(null)
-
-  useEffect(() => {
-    getAllTracks()
-      .then((allTracks) => {
-        setAllTracks(allTracks)
-      })
-      .catch((error) => {
-        console.log(`Ошибка загрузки`)
-        setGetTracksError(error.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [])
-
+const CenterBlockContent = ({ tracks, isLoading, error }) => {
+  const [setDisLike] = useSetDisLikeMutation()
+  const [setLike] = useSetLikeMutation()
+  const dispatch = useDispatch()
+  const currentTrack = useSelector((state) => state.playerApp.currentTrack)
+  const isPlaying = useSelector((state) => state.playerApp.isPlaying)
   const durationToString = (duration) => {
     let minutes = String(Math.trunc(duration / 60))
     let seconds = String(duration % 60)
     return `${minutes.padStart(2, 0)}:${seconds.padStart(2, 0)}`
   }
+
+  const handleToggleLike = (e, id, isLiked) => {
+    e.stopPropagation()
+    isLiked ? setDisLike({ id }) : setLike({ id })
+    if (id === currentTrack?.id)
+      dispatch(changeTrackLike({ isLiked: !currentTrack.isLiked }))
+  }
+  // console.log(tracks);
 
   return (
     <S.CenterBlockContentDiv>
@@ -46,7 +44,7 @@ const CenterBlockContent = () => {
       </S.ContentTitleDiv>
 
       <S.ContentPlaylistDiv>
-        {loading ? (
+        {isLoading ? (
           <>
             <PlayListItemSkeleton />
             <PlayListItemSkeleton />
@@ -62,20 +60,26 @@ const CenterBlockContent = () => {
             <PlayListItemSkeleton />
           </>
         ) : (
-          allTracks.map((track) => {
+          tracks?.map((track) => {
             return (
               <S.PlaylistItemDiv
                 key={track.id}
                 onClick={() => {
-                  setCurrentTrack(track)
+                  dispatch(setCurrentTrack({ track }))
                 }}
               >
                 <S.PlaylistTrackDiv>
                   <S.TrackTitleDiv>
                     <S.TrackTitleImageDiv>
-                      <S.TrackTitleSvg alt="music">
-                        <use xlinkHref="img/icon/sprite.svg#icon-note" />
-                      </S.TrackTitleSvg>
+                      {!currentTrack || currentTrack.id !== track.id ? (
+                        <S.TrackTitleSvg alt="music">
+                          <use xlinkHref="/img/icon/sprite.svg#icon-note" />
+                        </S.TrackTitleSvg>
+                      ) : isPlaying ? (
+                        <S.BlinkingDot />
+                      ) : (
+                        <S.PurpleDot />
+                      )}
                     </S.TrackTitleImageDiv>
                     <S.TrackTitleTextDiv>
                       <S.TrackTitleLinkA href="#">
@@ -96,9 +100,21 @@ const CenterBlockContent = () => {
                   </S.TrackAlbumDiv>
 
                   <S.TrackTimeDiv>
-                    <S.TrackTimeSvg alt="time">
-                      <use xlinkHref="img/icon/sprite.svg#icon-like" />
-                    </S.TrackTimeSvg>
+                    <button
+                      type="button"
+                      onClick={(e) =>
+                        handleToggleLike(e, track.id, track.isLiked)
+                      }
+                    >
+                      <S.TrackTimeSvg alt="like">
+                        <use
+                          xlinkHref={`/img/icon/sprite.svg#icon-${
+                            track.isLiked ? '' : 'dis'
+                          }likeMy`}
+                        />
+                      </S.TrackTimeSvg>
+                    </button>
+
                     <S.TrackTimeTextSpan>
                       {durationToString(track.duration_in_seconds)}
                     </S.TrackTimeTextSpan>
@@ -109,9 +125,10 @@ const CenterBlockContent = () => {
           })
         )}
 
-        {getTracksError ? (
+        {error ? (
           <p>
-            Не удалось загрузить плейлист, попробуйте позже. {getTracksError}
+            Не удалось загрузить плейлист, попробуйте позже.
+            {/* {error.data} */}
           </p>
         ) : null}
       </S.ContentPlaylistDiv>

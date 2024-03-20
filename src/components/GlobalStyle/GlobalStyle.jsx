@@ -20,6 +20,12 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
   
+  button {
+    background-color: transparent;
+    border: none;
+    
+  }
+
   button,
   ._btn {
     cursor: pointer;
