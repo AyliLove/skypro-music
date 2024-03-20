@@ -3,27 +3,32 @@ import { loadingContext } from '../../Context'
 import PlayListItemSkeleton from './PlayListItemSkeleton'
 import * as S from './CenterBlockContent.styles.js'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCurrentTrack } from '../../store/playerSlice.js'
+import { changeTrackLike, setCurrentTrack } from '../../store/playerSlice.js'
+import {
+  useSetDisLikeMutation,
+  useSetLikeMutation,
+} from '../../store/api/tracksApi.js'
 
-const CenterBlockContent = (props) => {
-  const { loading, setLoading } = useContext(loadingContext)
-  const { getTracksError, setGetTracksError } = useContext(loadingContext)
-  // const {  setCurrentTrack } = useContext(userContext)
+
+const CenterBlockContent = ({ tracks, isLoading, error }) => {
+  const [setDisLike] = useSetDisLikeMutation()
+  const [setLike] = useSetLikeMutation()
   const dispatch = useDispatch()
   const currentTrack = useSelector((state) => state.playerApp.currentTrack)
   const isPlaying = useSelector((state) => state.playerApp.isPlaying)
-  // const [allTracks, setAllTracks] = useState([])
-  const allTracks = useSelector((state) => state.playerApp.ordinalPlayList)
-
-  useEffect(() => {
-    props.getAnyTracks()
-  }, [])
-
   const durationToString = (duration) => {
     let minutes = String(Math.trunc(duration / 60))
     let seconds = String(duration % 60)
     return `${minutes.padStart(2, 0)}:${seconds.padStart(2, 0)}`
   }
+
+  const handleToggleLike = (e, id, isLiked) => {
+    e.stopPropagation()
+    isLiked ? setDisLike({ id }) : setLike({ id })
+    if (id === currentTrack?.id)
+      dispatch(changeTrackLike({ isLiked: !currentTrack.isLiked }))
+  }
+  // console.log(tracks);
 
   return (
     <S.CenterBlockContentDiv>
@@ -39,7 +44,7 @@ const CenterBlockContent = (props) => {
       </S.ContentTitleDiv>
 
       <S.ContentPlaylistDiv>
-        {loading ? (
+        {isLoading ? (
           <>
             <PlayListItemSkeleton />
             <PlayListItemSkeleton />
@@ -55,7 +60,7 @@ const CenterBlockContent = (props) => {
             <PlayListItemSkeleton />
           </>
         ) : (
-          allTracks.map((track) => {
+          tracks?.map((track) => {
             return (
               <S.PlaylistItemDiv
                 key={track.id}
@@ -68,7 +73,7 @@ const CenterBlockContent = (props) => {
                     <S.TrackTitleImageDiv>
                       {!currentTrack || currentTrack.id !== track.id ? (
                         <S.TrackTitleSvg alt="music">
-                          <use xlinkHref="img/icon/sprite.svg#icon-note" />
+                          <use xlinkHref="/img/icon/sprite.svg#icon-note" />
                         </S.TrackTitleSvg>
                       ) : isPlaying ? (
                         <S.BlinkingDot />
@@ -95,9 +100,21 @@ const CenterBlockContent = (props) => {
                   </S.TrackAlbumDiv>
 
                   <S.TrackTimeDiv>
-                    <S.TrackTimeSvg alt="time">
-                      <use xlinkHref="img/icon/sprite.svg#icon-like" />
-                    </S.TrackTimeSvg>
+                    <button
+                      type="button"
+                      onClick={(e) =>
+                        handleToggleLike(e, track.id, track.isLiked)
+                      }
+                    >
+                      <S.TrackTimeSvg alt="like">
+                        <use
+                          xlinkHref={`/img/icon/sprite.svg#icon-${
+                            track.isLiked ? '' : 'dis'
+                          }likeMy`}
+                        />
+                      </S.TrackTimeSvg>
+                    </button>
+
                     <S.TrackTimeTextSpan>
                       {durationToString(track.duration_in_seconds)}
                     </S.TrackTimeTextSpan>
@@ -108,9 +125,10 @@ const CenterBlockContent = (props) => {
           })
         )}
 
-        {getTracksError ? (
+        {error ? (
           <p>
-            Не удалось загрузить плейлист, попробуйте позже. {getTracksError}
+            Не удалось загрузить плейлист, попробуйте позже.
+            {/* {error.data} */}
           </p>
         ) : null}
       </S.ContentPlaylistDiv>

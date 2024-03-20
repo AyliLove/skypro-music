@@ -5,38 +5,73 @@ import CenterBlockFilter from '../../components/CenterBlockFilter/CenterBlockFil
 import CenterBlockSearch from '../../components/CenterBlockSearch/CenterBlockSearch'
 import * as S from './MainTracks.styles'
 import { setPlayList } from '../../store/playerSlice'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { loadingContext } from '../../Context'
+import { useGetAllTracksQuery } from '../../store/api/tracksApi'
 
 export const MainTracks = () => {
   const dispatch = useDispatch()
-  const { getTracksError, setGetTracksError } = useContext(loadingContext)
-  const { loading, setLoading } = useContext(loadingContext)
   const isPlaying = useSelector((state) => state.playerApp.isPlaying)
+  const filters = useSelector((state) => state.playerApp.filters)
+  const searchString = useSelector((state) => state.playerApp.searchString)
+  console.log(searchString)
 
-  const handleGetAllTracks = () => {
-    getAllTracks()
-      .then((allTracks) => {
-        dispatch(setPlayList({ playList: allTracks }))
-        console.log('получили все треки')
-        console.log(allTracks)
-      })
-      .catch((error) => {
-        console.log(`Ошибка загрузки`)
-        setGetTracksError(error.message)
-      })
-      .finally(() => {
-        setLoading(false)
-        console.log(isPlaying)
-      })
+
+
+  const { data, isLoading, error } = useGetAllTracksQuery()
+
+  useEffect(() => {
+    if (data?.length) dispatch(setPlayList({ playList: data }))
+  }, [data])
+
+  const filterTracks = () => {
+    if (data?.length) {
+      let filteredTracks = [...data]
+
+      if (filters.authors.length) {
+        filteredTracks = filteredTracks.filter((el) =>
+          filters.authors.includes(el.author),
+        )
+      }
+      if (filters.genre.length) {
+        filteredTracks = filteredTracks.filter((el) =>
+          filters.genre.includes(el.genre),
+        )
+      }
+
+      switch (filters.dateOrder) {
+        case 'Сначала новые':
+          filteredTracks.sort(
+            (a, b) => new Date(b.release_date) - new Date(a.release_date),
+          )
+          break
+        case 'Сначала старые':
+          filteredTracks.sort(
+            (a, b) => new Date(a.release_date) - new Date(b.release_date),
+          )
+          break
+      }
+
+      if (searchString?.length) {
+        filteredTracks = filteredTracks.filter((el) =>
+          el.name.toLowerCase().includes(searchString.toLowerCase()),
+        )
+      }
+
+      return filteredTracks
+    }
+
+    return []
   }
+
+  const tracks = filterTracks()
 
   return (
     <>
       <CenterBlockSearch />
       <S.CenterBlockH2>Все треки</S.CenterBlockH2>
       <CenterBlockFilter />
-      <CenterBlockContent getAnyTracks={handleGetAllTracks} />
+      <CenterBlockContent tracks={tracks} isLoading={isLoading} error={error} />
     </>
   )
 }

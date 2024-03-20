@@ -1,4 +1,5 @@
 import { createSlice, current } from '@reduxjs/toolkit'
+import { tracksApi } from './api/tracksApi'
 
 const playerSlice = createSlice({
   name: 'player',
@@ -10,19 +11,25 @@ const playerSlice = createSlice({
     playList: [],
     shuffledPlayList: [],
     ordinalPlayList: [],
+    filteredPlayList: [],
+    filters: {
+      authors: [],
+      dateOrder: 'По умолчанию',
+      genre: [],
+    },
+    searchString: [],
   },
   reducers: {
     setCurrentTrack(state, action) {
       state.isPlaying = true
       state.currentTrack = action.payload.track
-      // console.log(state.playList)
       state.currentTrackId = state.playList.findIndex(
         (el) => el.id === state.currentTrack.id,
       )
       console.log(state.currentTrackId)
     },
 
-    clearCurrentTrack(state, action) {
+    clearCurrentTrack(state) {
       state.isPlaying = false
       state.isShuffle = false
       state.currentTrack = null
@@ -35,29 +42,29 @@ const playerSlice = createSlice({
       state.ordinalPlayList = action.payload.playList
     },
 
-    playTrack(state, action) {
+    playTrack(state) {
       state.isPlaying = true
     },
 
-    stopTrack(state, action) {
+    stopTrack(state) {
       state.isPlaying = false
     },
 
-    nextTrack(state, action) {
+    nextTrack(state) {
       if (state.playList[state.currentTrackId + 1]) {
         state.currentTrack = state.playList[state.currentTrackId + 1]
         state.currentTrackId++
-      } 
+      }
     },
 
-    prevTrack(state, action) {
+    prevTrack(state) {
       if (state.playList[state.currentTrackId - 1]) {
         state.currentTrack = state.playList[state.currentTrackId - 1]
         state.currentTrackId--
       }
     },
 
-    shuffleTrack(state, action) {
+    shuffleTrack(state) {
       const shuffle = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
           let j = Math.floor(Math.random() * (i + 1))
@@ -74,6 +81,34 @@ const playerSlice = createSlice({
         state.playList = state.ordinalPlayList
       }
     },
+
+    changeTrackLike(state, action) {
+      const { isLiked } = action.payload
+      state.currentTrack.isLiked = isLiked
+    },
+
+    setFilters(state, action) {
+      const { filterName, filterValue } = action.payload
+
+      if (filterName === 'dateOrder') {
+        state.filters[filterName] = filterValue
+        return
+      }
+
+      if (state.filters[filterName].includes(filterValue)) {
+        state.filters[filterName] = state.filters[filterName].filter(
+          (el) => el.toLowerCase() !== filterValue.toLowerCase(),
+        )
+        // console.log(Object.values(state.filters[filterName]))
+      } else {
+        state.filters[filterName].push(filterValue)
+        // console.log(Object.values(state.filters[filterName]))
+      }
+    },
+
+    searchTracks(state, action) {
+      state.searchString = action.payload.value
+    },
   },
 })
 
@@ -86,6 +121,9 @@ export const {
   nextTrack,
   prevTrack,
   shuffleTrack,
+  setFilters,
+  changeTrackLike,
+  searchTracks,
 } = playerSlice.actions
 
 export default playerSlice.reducer

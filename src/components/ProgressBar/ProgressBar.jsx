@@ -40,10 +40,6 @@ export const ProgressInputVolume = forwardRef((props, ref) => {
 
   const [volume, setVolume] = useState(0.1)
 
-  // const handleVolume = (value) => {
-  //   setVolume(value)
-  //   ref.current.volume = value
-  // }
 
   useEffect(() => {
     ref.current.volume = volume
